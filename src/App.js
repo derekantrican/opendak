@@ -11,7 +11,7 @@ function App() {
   const [mpBotKarma, setMpBotKarma] = useState(0);
   const [dateForCalendarEvents, setDateForCalendarEvents] = useState(new Date());
   const [calendarEvents, setCalendarEvents] = useState([]);
-  const [pocketArticles, setPocketArticles] = useState(null);
+  const [raindrops, setRaindrops] = useState(null);
   const [weatherData, setWeatherData] = useState(null);
 
   const [settings, setSettings] = useState(null);
@@ -53,7 +53,7 @@ function App() {
       getWeatherForecast();
       updateMountainProjectBotKarma();
       updateCalendarEvents();
-      getPocketArticles();
+      getRaindrops();
     }
   }
 
@@ -156,23 +156,16 @@ function App() {
     setCalendarEvents(eventsToShow);
   }
 
-  async function getPocketArticles() {
-    const response = await fetch(`${settings.corsProxySettings.url}https://getpocket.com/v3/get`, {
-      method: 'POST',
-      headers: settings.corsProxySettings.headers,
-      body: JSON.stringify({
-        consumer_key: settings.pocketAuth.consumerKey,
-        access_token: settings.pocketAuth.accessToken,
-        contentType: 'video',
-        detailType: 'complete',
-      }),
+  async function getRaindrops() {
+    const response = await fetch('https://api.raindrop.io/rest/v1/raindrops/0', {
+      headers: {
+        'Authorization': `Bearer ${settings.raindrop.temporaryToken}`, //Todo: this should be oauth instead
+      },
     });
 
-    if (response.ok) {
-      const data = await response.json();
-
-      setPocketArticles(Object.values(data.list).filter(a => (new Date() - new Date(a.time_updated * 1000))/1000/60/60/24 < 5).sort((a, b) => b.time_updated - a.time_updated).slice(0, 5));
-    }
+    const items = (await response.json()).items;
+    const last5videos = items.filter(i => i.type == 'video' /*Todo: maybe users don't want to filter to 'video' - this should be a setting */).slice(0, 5);
+    setRaindrops(last5videos);
   }
 
   return (
@@ -194,7 +187,7 @@ function App() {
       }}>
         <div>
           <TurkiyeTimeWidget dateTime={dateTime}/>
-          <PocketItemsWidget positionStyles={{position: 'fixed', top: '30%', height: '30%', width: '23%'}} articles={pocketArticles}/>
+          <RaindropsWidget positionStyles={{position: 'fixed', top: '30%', height: '30%', width: '23%'}} raindrops={raindrops}/>
           {weatherData ? <WeatherWidget positionStyles={{position: 'fixed', bottom: '0px', width: 600, height: 200}} weather={weatherData}/> : null}
         </div>
         <MainClockWidget positionStyles={{alignSelf: 'center', justifySelf: 'center'}} dateTime={dateTime}/>
@@ -373,13 +366,13 @@ function TurkiyeTimeWidget(props) {
   );
 }
 
-function PocketItemsWidget(props) {
+function RaindropsWidget(props) {
   return (
     <div style={{display: 'flex', flexDirection: 'column', marginLeft: '8px', ...props.positionStyles}}>
-      <Typography variant="h5" sx={{marginBottom: '8px'}}>Pocket Articles</Typography>
+      <Typography variant="h5" sx={{marginBottom: '8px'}}>Raindrops</Typography>
       <Divider sx={{marginBottom: '8px'}}/>
-      {props.articles?.map(a => 
-        <Typography key={a.item_id} variant="h5" sx={{whiteSpace: 'pre-wrap'}}>• {a.resolved_title}</Typography>
+      {props.raindrops?.map(a => 
+        <Typography key={a.item_id} variant="h5" sx={{whiteSpace: 'pre-wrap'}}>• {a.title}</Typography>
       )}
     </div>
   );
