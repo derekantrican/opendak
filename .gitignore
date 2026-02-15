@@ -21,3 +21,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Ignore my own settings file (but leaving it here so AI has context)
+opendak-settings.json
