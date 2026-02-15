@@ -5,6 +5,7 @@ import {
 import SettingsIcon from '@mui/icons-material/Settings';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import GlobalSettingsForm from './settings/GlobalSettingsForm';
 import WidgetList from './settings/WidgetList';
 import WidgetEditor from './settings/WidgetEditor';
@@ -123,63 +124,93 @@ export default function SettingsPanel({ settings, onSettingsChange }) {
         anchor="right"
         open={open}
         onClose={() => { setOpen(false); setEditingWidgetIndex(null); setEditingWidget(null); }}
-        PaperProps={{ sx: { width: 400, p: 2 } }}
+        PaperProps={{ sx: { width: 400, p: 2, display: 'flex', flexDirection: 'column' } }}
       >
-        <Typography variant="h5" sx={{ mb: 1 }}>OpenDak Settings</Typography>
+        <Box sx={{ flex: 1, overflow: 'auto' }}>
+          <Typography variant="h5" sx={{ mb: 1 }}>OpenDak Settings</Typography>
 
-        {/* Import / Export */}
-        <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-          <Button startIcon={<FileDownloadIcon />} onClick={handleExport} size="small" variant="outlined">
-            Export
-          </Button>
-          <Button startIcon={<FileUploadIcon />} onClick={handleImport} size="small" variant="outlined">
-            Import
-          </Button>
-        </div>
+          {/* Import / Export */}
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
+            <Button startIcon={<FileDownloadIcon />} onClick={handleExport} size="small" variant="outlined">
+              Export
+            </Button>
+            <Button startIcon={<FileUploadIcon />} onClick={handleImport} size="small" variant="outlined">
+              Import
+            </Button>
+          </div>
 
-        <Divider />
+          <Divider />
 
-        <Tabs value={tab} onChange={(_, v) => { setTab(v); setEditingWidgetIndex(null); setEditingWidget(null); }} sx={{ mb: 1 }}>
-          <Tab label="Global" />
-          <Tab label="Widgets" />
-        </Tabs>
+          <Tabs value={tab} onChange={(_, v) => { setTab(v); setEditingWidgetIndex(null); setEditingWidget(null); }} sx={{ mb: 1 }}>
+            <Tab label="Global" />
+            <Tab label="Widgets" />
+          </Tabs>
 
-        {/* Global tab */}
-        <TabPanel value={tab} index={0}>
-          <GlobalSettingsForm
-            globalSettings={settings.global}
-            onChange={handleGlobalChange}
-          />
-        </TabPanel>
-
-        {/* Widgets tab */}
-        <TabPanel value={tab} index={1}>
-          {editingWidgetIndex !== null && editingWidget ? (
-            <WidgetEditor
-              widget={editingWidget}
-              onChange={handleWidgetSave}
-              onCancel={handleWidgetCancel}
-              isNew={editingWidgetIndex === -1}
+          {/* Global tab */}
+          <TabPanel value={tab} index={0}>
+            <GlobalSettingsForm
+              globalSettings={settings.global}
+              onChange={handleGlobalChange}
             />
-          ) : (
-            <>
-              <Button
-                variant="contained"
-                onClick={handleAddWidget}
-                size="small"
-                fullWidth
-                sx={{ mb: 1 }}
-              >
-                Add Widget
-              </Button>
-              <WidgetList
-                widgets={settings.widgets}
-                onEdit={handleEditWidget}
-                onDelete={handleDeleteWidget}
+          </TabPanel>
+
+          {/* Widgets tab */}
+          <TabPanel value={tab} index={1}>
+            {editingWidgetIndex !== null && editingWidget ? (
+              <WidgetEditor
+                widget={editingWidget}
+                onChange={handleWidgetSave}
+                onCancel={handleWidgetCancel}
+                isNew={editingWidgetIndex === -1}
               />
-            </>
-          )}
-        </TabPanel>
+            ) : (
+              <>
+                <Button
+                  variant="contained"
+                  onClick={handleAddWidget}
+                  size="small"
+                  fullWidth
+                  sx={{ mb: 1 }}
+                >
+                  Add Widget
+                </Button>
+                <WidgetList
+                  widgets={settings.widgets}
+                  onEdit={handleEditWidget}
+                  onDelete={handleDeleteWidget}
+                />
+              </>
+            )}
+          </TabPanel>
+        </Box>
+
+        {/* Footer links — hidden when editing a widget */}
+        {editingWidgetIndex === null && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1.5, pt: 1.5, pb: 1.5, borderTop: '1px solid rgba(0,0,0,0.12)' }}>
+            <IconButton
+              component="a"
+              href="https://github.com/derekantrican/opendak"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="GitHub"
+              disableRipple
+              sx={{ '&:hover': { backgroundColor: 'transparent' } }}
+            >
+              <GitHubIcon sx={{ fontSize: 32 }} />
+            </IconButton>
+            <IconButton
+              component="a"
+              href="https://ko-fi.com/derekantrican"
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Support on Ko-fi"
+              disableRipple
+              sx={{ '&:hover': { backgroundColor: 'transparent' } }}
+            >
+              <img src="https://storage.ko-fi.com/cdn/kofi6.png?v=6" alt="Ko-fi" style={{ height: 36 }} />
+            </IconButton>
+          </Box>
+        )}
       </Drawer>
     </>
   );
