@@ -68,6 +68,10 @@ function App() {
   };
 
   async function getWeatherForecast() {
+    if (!settings.openWeatherSettings) {
+      return;
+    }
+
     const response = await fetch(`https://api.openweathermap.org/data/3.0/onecall?lat=${settings.openWeatherSettings.lat}&lon=${settings.openWeatherSettings.lon}&appid=${settings.openWeatherSettings.appid}&units=${settings.openWeatherSettings.units}&exclude=minutely,hourly`);
     if (response.ok) {
       const data = await response.json();
@@ -86,6 +90,10 @@ function App() {
     var today = new Date();
     today.setHours(0, 0, 0, 0);
     var tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+
+    if (!settings.calendars) {
+      return;
+    }
 
     for (var calendar of settings.calendars) {
       const response = await fetch(settings.corsProxySettings.url + calendar.url, {
@@ -157,6 +165,10 @@ function App() {
   }
 
   async function getRaindrops() {
+    if (!settings.raindrop || !settings.raindrop.temporaryToken) { 
+      return;
+    }
+
     const response = await fetch('https://api.raindrop.io/rest/v1/raindrops/0', {
       headers: {
         'Authorization': `Bearer ${settings.raindrop.temporaryToken}`, //Todo: this should be oauth instead
