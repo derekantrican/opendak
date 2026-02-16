@@ -3,6 +3,7 @@ import { Divider, Typography } from '@mui/material';
 import { useSettings } from '../../context/SettingsContext';
 import { compareDateOnly } from '../../utils/dateUtils';
 import { parseCalendarData, getCalendarEventsForDisplay } from '../../utils/calendarUtils';
+import { safeParseJSON } from '../../utils/jsonUtils';
 
 function CalendarEvent({ event }) {
   const hourCycle = 'h23';
@@ -40,12 +41,13 @@ export default function CalendarWidget({ config }) {
     const fetchCalendars = async () => {
       try {
         const corsProxy = settings?.global?.corsProxy || { url: '', headers: {} };
+        const proxyHeaders = safeParseJSON(corsProxy.headers);
         const calendarsData = [];
 
         for (const cal of calendars) {
           try {
             const response = await fetch(corsProxy.url + cal.url, {
-              headers: corsProxy.headers,
+              headers: proxyHeaders,
             });
 
             if (response.ok) {

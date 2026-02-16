@@ -4,6 +4,7 @@ import { ThemeProvider } from '@emotion/react';
 import { LinearProgress, Typography, createTheme } from '@mui/material';
 import { SettingsContext } from './context/SettingsContext';
 import { createDefaultSettings, migrateOldSettings } from './models/settingsSchema';
+import { safeParseJSON } from './utils/jsonUtils';
 import WidgetRenderer from './components/WidgetRenderer';
 import SettingsPanel from './components/SettingsPanel';
 
@@ -52,10 +53,10 @@ function App() {
     try {
       const subreddit = s.global.backgroundSubreddit;
       const corsProxy = s.global?.corsProxy;
-      const redditUrl = `https://www.reddit.com/r/${subreddit}/hot.json?limit=50`;
+      const redditUrl = `https://www.reddit.com/r/${subreddit}/hot/.json?limit=50`;
       const response = await fetch(
         corsProxy?.url ? corsProxy.url + redditUrl : redditUrl,
-        corsProxy?.url ? { headers: corsProxy.headers } : {},
+        corsProxy?.url ? { headers: safeParseJSON(corsProxy.headers) } : {},
       );
       const data = await response.json();
 

@@ -1,4 +1,5 @@
 import { Switch, TextField, Typography } from '@mui/material';
+import { isValidJSON } from '../../utils/jsonUtils';
 
 export default function GlobalSettingsForm({ globalSettings, onChange }) {
   const handleChange = (field, value) => {
@@ -10,15 +11,6 @@ export default function GlobalSettingsForm({ globalSettings, onChange }) {
       ...globalSettings,
       corsProxy: { ...globalSettings.corsProxy, [field]: value },
     });
-  };
-
-  const handleCorsHeadersChange = (value) => {
-    try {
-      const parsed = JSON.parse(value);
-      handleCorsChange('headers', parsed);
-    } catch {
-      // Let the user keep typing — only update if valid JSON
-    }
   };
 
   return (
@@ -56,12 +48,21 @@ export default function GlobalSettingsForm({ globalSettings, onChange }) {
 
       <TextField
         label="Proxy Headers (JSON)"
-        value={JSON.stringify(globalSettings.corsProxy?.headers || {}, null, 2)}
-        onChange={(e) => handleCorsHeadersChange(e.target.value)}
+        value={typeof globalSettings.corsProxy?.headers === 'object'
+          ? JSON.stringify(globalSettings.corsProxy.headers, null, 2)
+          : (globalSettings.corsProxy?.headers ?? '')}
+        onChange={(e) => handleCorsChange('headers', e.target.value)}
         size="small"
         multiline
         minRows={2}
-        helperText='e.g. {"x-api-key": "abc123"}'
+        error={!isValidJSON(typeof globalSettings.corsProxy?.headers === 'object'
+          ? JSON.stringify(globalSettings.corsProxy.headers)
+          : globalSettings.corsProxy?.headers)}
+        helperText={!isValidJSON(typeof globalSettings.corsProxy?.headers === 'object'
+          ? JSON.stringify(globalSettings.corsProxy.headers)
+          : globalSettings.corsProxy?.headers)
+          ? 'Invalid JSON — headers will be ignored'
+          : 'e.g. {"x-api-key": "abc123"}'}
         fullWidth
       />
     </div>

@@ -7,6 +7,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { getBaseFields, getFieldsForType, WIDGET_TYPES, createWidget } from '../../models/settingsSchema';
+import { isValidJSON } from '../../utils/jsonUtils';
 
 function CalendarListEditor({ value, onChange }) {
   const calendars = value || [];
@@ -96,15 +97,19 @@ function FieldRenderer({ field, value, onChange }) {
   }
 
   if (field.type === 'textarea') {
+    const raw = value ?? field.default ?? '';
+    const jsonInvalid = raw !== '' && !isValidJSON(raw);
     return (
       <TextField
         label={field.label}
-        value={value ?? field.default ?? ''}
+        value={raw}
         onChange={(e) => onChange(e.target.value)}
         size="small"
         multiline
         minRows={2}
         placeholder={field.placeholder}
+        error={jsonInvalid}
+        helperText={jsonInvalid ? 'Invalid JSON — value will be ignored' : undefined}
         fullWidth
       />
     );

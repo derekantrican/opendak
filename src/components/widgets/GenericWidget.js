@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Typography } from '@mui/material';
 import { JSONPath } from 'jsonpath-plus';
 import { useSettings } from '../../context/SettingsContext';
+import { safeParseJSON } from '../../utils/jsonUtils';
 
 export default function GenericWidget({ config }) {
   const { refreshSignal, settings } = useSettings();
@@ -28,7 +29,7 @@ export default function GenericWidget({ config }) {
         const corsProxy = settings?.global?.corsProxy;
         if (corsProxy?.url) {
           fetchUrl = corsProxy.url + config.requestUrl;
-          headers = { ...headers, ...corsProxy.headers };
+          headers = { ...headers, ...safeParseJSON(corsProxy.headers) };
         }
 
         const response = await fetch(fetchUrl, { headers });
