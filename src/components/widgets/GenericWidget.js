@@ -10,7 +10,8 @@ export default function GenericWidget({ config }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!config.requestUrl) return;
+    if (!config.requestUrl)
+      return;
 
     const fetchData = async () => {
       try {
@@ -20,7 +21,8 @@ export default function GenericWidget({ config }) {
             headers = typeof config.requestHeaders === 'string'
               ? JSON.parse(config.requestHeaders)
               : config.requestHeaders;
-          } catch {
+          }
+          catch {
             // Invalid JSON — ignore headers
           }
         }
@@ -46,11 +48,19 @@ export default function GenericWidget({ config }) {
         // Apply data selector (JSONPath)
         let selected = json;
         if (config.dataSelector) {
-          const results = JSONPath({ path: config.dataSelector, json });
+          const results = JSONPath({
+            path: config.dataSelector,
+            json,
+            sandbox: { // Add helper functions that can be used in JSONPath expressions
+              daysAgo: (n) => Date.now() - n * 24 * 60 * 60 * 1000,
+              toDate: (s) => new Date(s).getTime(),
+            },
+          });
           // If JSONPath returned a single primitive value, unwrap it
           if (results.length === 1 && (typeof results[0] !== 'object' || results[0] === null)) {
             selected = results[0];
-          } else {
+          }
+          else {
             selected = results;
           }
         }
@@ -69,8 +79,10 @@ export default function GenericWidget({ config }) {
                 const result = JSONPath({ path: config.displaySelector, json: item });
                 return result.length > 0 ? result[0] : item;
               }
+
               return item[config.displaySelector] ?? item;
             }
+
             return item;
           });
         }
@@ -111,7 +123,7 @@ export default function GenericWidget({ config }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
       {displayData.map((item, index) => (
-        <Typography key={index} variant="h5" sx={{ whiteSpace: 'pre-wrap' }}>
+        <Typography key={index} variant="h5" sx={{ whiteSpace: 'pre-wrap', marginLeft: '8px' }}>
           • {String(item)}
         </Typography>
       ))}

@@ -38,6 +38,37 @@ Every widget has base settings for positioning and appearance:
 
 Each widget type has additional type-specific settings (API keys, timezones, calendar URLs, JSONPath selectors, etc.) configurable through the settings panel.
 
+### Generic Widget
+
+The Generic widget fetches JSON from any API and uses two selectors to extract and display data:
+
+- **Data Selector** — a [JSONPath](https://goessner.net/articles/JsonPath/) expression that selects which data to extract from the API response. If the result is a single scalar value (e.g. a number or string), it's displayed as-is. If it's an array, each item is shown as a bulleted list.
+- **Display Selector** — applied _after_ the Data Selector when the result is an array of objects. Specifies which property of each object to display (e.g. `title`). Supports simple property names or JSONPath expressions starting with `$`.
+
+**Example**: given an API that returns `{ "items": [{ "title": "Foo", "type": "video" }, ...] }`:
+
+| Setting | Value | Effect |
+|---|---|---|
+| Data Selector | `$.items` | Selects all items |
+| Data Selector | `$.items[?(@.type=='video')]` | Selects only items where type is "video" |
+| Display Selector | `title` | Shows each item's title instead of the full object |
+| Max Items | `5` | Limits output to 5 items |
+
+#### Filter Helpers
+
+The Data Selector also supports these built-in helper functions for date filtering:
+
+| Helper | Description | Example |
+|---|---|---|
+| `daysAgo(n)` | Returns a timestamp for `n` days ago | `daysAgo(5)` |
+| `toDate(s)` | Converts a date string or timestamp to a comparable value | `toDate(@.created)` |
+
+**Example** — show only videos created in the last 5 days:
+
+```
+$.items[?(@.type=='video' && toDate(@.created) > daysAgo(5))]
+```
+
 ## Try It
 
 Visit **[opendak.app](https://opendak.app)** — click the ⚙️ to configure your widgets, or import a pre-made settings JSON via the Import button.
