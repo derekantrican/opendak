@@ -89,6 +89,7 @@ export const getFieldsForType = (type) => {
 export const createDefaultSettings = () => ({
   global: {
     backgroundSubreddit: 'EarthPorn',
+    backgroundTransition: true,
     corsProxy: {
       url: '',
       headers: {},

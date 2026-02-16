@@ -1,4 +1,4 @@
-import { TextField, Typography } from '@mui/material';
+import { Switch, TextField, Typography } from '@mui/material';
 
 export default function GlobalSettingsForm({ globalSettings, onChange }) {
   const handleChange = (field, value) => {
@@ -33,6 +33,15 @@ export default function GlobalSettingsForm({ globalSettings, onChange }) {
         helperText="e.g. EarthPorn, NaturePorn, SkyPorn"
         fullWidth
       />
+
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Typography variant="body2">Background Transition (disable on GPU-sensitive devices like raspberry pi)</Typography>
+        <Switch
+          checked={!!globalSettings.backgroundTransition}
+          onChange={(e) => handleChange('backgroundTransition', e.target.checked)}
+          size="small"
+        />
+      </div>
 
       <Typography variant="subtitle2" sx={{ mt: 1 }}>CORS Proxy</Typography>
 

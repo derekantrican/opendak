@@ -63,7 +63,19 @@ function App() {
 
       if (landscapePosts.length > 0) {
         const randomPost = landscapePosts[Math.floor(Math.random() * landscapePosts.length)];
-        setBackgroundImage(randomPost.data);
+        const preview = randomPost.data.preview?.images?.[0];
+
+        // Pick a preview resolution that's close to the screen size (avoids loading 6000x4000 images)
+        let imageUrl = randomPost.data.url;
+        if (preview?.resolutions?.length > 0) {
+          const screenWidth = window.screen.width * (window.devicePixelRatio || 1);
+          // Pick the smallest resolution that covers the screen width, or the largest available
+          const suitable = preview.resolutions.find(r => r.width >= screenWidth)
+            || preview.resolutions[preview.resolutions.length - 1];
+          imageUrl = suitable.url.replace(/&amp;/g, '&');
+        }
+
+        setBackgroundImage({ ...randomPost.data, url: imageUrl });
       }
     } catch (err) {
       console.error('Failed to fetch background:', err);
@@ -112,10 +124,9 @@ function App() {
           backgroundImage: backgroundImage?.url ? `url(${backgroundImage.url})` : undefined,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          backgroundAttachment: 'fixed',
           backgroundRepeat: 'no-repeat',
           backgroundBlendMode: 'darken',
-          transition: 'background-image 5s',
+          transition: settings.global.backgroundTransition ? 'background-image 5s' : undefined,
           textShadow: 'black 2px 2px',
         }}>
           {hasWidgets ? (
