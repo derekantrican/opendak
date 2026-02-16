@@ -24,7 +24,7 @@ export const fontSizeMap = {
 const baseFields = [
   { key: 'title', label: 'Title', type: 'text', placeholder: 'Optional title shown above widget' },
   { key: 'textAlign', label: 'Text Align', type: 'select', options: ['left', 'right'], default: 'left' },
-  { key: 'backgroundColor', label: 'Background Color', type: 'text', placeholder: 'e.g. rgba(134,122,122,0.36)' },
+  { key: 'backgroundColor', label: 'Background Color', type: 'text', placeholder: 'e.g. rgba(134,122,122,0.36) or #867A7A5C' },
   { key: 'fontSize', label: 'Font Size', type: 'select', options: ['small', 'medium', 'large'], default: 'medium' },
   { key: 'x', label: 'Position X', type: 'text', placeholder: 'e.g. 10% or 200px' },
   { key: 'y', label: 'Position Y', type: 'text', placeholder: 'e.g. 10% or 100px' },

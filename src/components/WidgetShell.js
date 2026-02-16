@@ -1,5 +1,12 @@
 import { Typography } from '@mui/material';
 
+// If a value is a bare number (e.g. "200" or 200), append "px"
+function cssUnit(val) {
+  if (val == null || val === '') return undefined;
+  const s = String(val);
+  return /^\d+(\.\d+)?$/.test(s) ? s + 'px' : s;
+}
+
 export default function WidgetShell({ config, children }) {
   const {
     title,
@@ -15,8 +22,8 @@ export default function WidgetShell({ config, children }) {
   // e.g. y: "bottom:0px" puts the widget at the bottom
   const positionStyle = {
     position: 'absolute',
-    width: width || undefined,
-    height: height || undefined,
+    width: cssUnit(width),
+    height: cssUnit(height),
     textAlign: textAlign || 'left',
   };
 
@@ -25,10 +32,10 @@ export default function WidgetShell({ config, children }) {
   if (x === 'center') {
     positionStyle.left = '50%';
     translateX = '-50%';
-  } else if (x && x.startsWith('right:')) {
-    positionStyle.right = x.slice(6);
+  } else if (x && String(x).startsWith('right:')) {
+    positionStyle.right = cssUnit(String(x).slice(6));
   } else {
-    positionStyle.left = x || undefined;
+    positionStyle.left = cssUnit(x);
   }
 
   // Handle y positioning
@@ -36,10 +43,10 @@ export default function WidgetShell({ config, children }) {
   if (y === 'center') {
     positionStyle.top = '50%';
     translateY = '-50%';
-  } else if (y && y.startsWith('bottom:')) {
-    positionStyle.bottom = y.slice(7);
+  } else if (y && String(y).startsWith('bottom:')) {
+    positionStyle.bottom = cssUnit(String(y).slice(7));
   } else {
-    positionStyle.top = y || undefined;
+    positionStyle.top = cssUnit(y);
   }
 
   // Apply transform if centering on either axis
@@ -47,8 +54,14 @@ export default function WidgetShell({ config, children }) {
     positionStyle.transform = `translate(${translateX || '0'}, ${translateY || '0'})`;
   }
 
-  const bgStyle = backgroundColor
-    ? { backgroundColor, borderRadius: '0.3em', padding: '10px' }
+  // Normalize backgroundColor: support rgba() and 8-digit hex (#RRGGBBAA)
+  let bg = backgroundColor;
+  if (bg && /^[0-9a-fA-F]{8}$/.test(bg)) {
+    bg = '#' + bg;
+  }
+
+  const bgStyle = bg
+    ? { backgroundColor: bg, borderRadius: '0.3em', padding: '10px' }
     : {};
 
   return (

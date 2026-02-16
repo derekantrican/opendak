@@ -26,11 +26,11 @@ Every widget has base settings for positioning and appearance:
 
 | Setting | Description | Example Values |
 |---|---|---|
-| Position (x, y) | Pixel, percentage, `center`, `right:0px`, `bottom:0px` | `10%`, `200px`, `center` |
-| Size (width, height) | Pixel or percentage | `300px`, `25%` |
+| Position (x, y) | Pixel, percentage, `center`, `right:`, `bottom:` | `200`, `10%`, `center`, `right:0` |
+| Size (width, height) | Pixel or percentage (bare numbers default to px) | `300`, `25%` |
 | Title | Optional label above the widget | |
 | Text Align | `left` or `right` | |
-| Background Color | Any rgba value | `rgba(134,122,122,0.36)` |
+| Background Color | Any CSS color — rgba or 8-digit hex | `rgba(134,122,122,0.36)`, `#867A7A5C` |
 | Font Size | `small`, `medium`, or `large` | |
 
 Each widget type has additional type-specific settings (API keys, timezones, calendar URLs, JSONPath selectors, etc.) configurable through the settings panel.
