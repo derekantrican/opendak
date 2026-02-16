@@ -4,7 +4,7 @@ import { JSONPath } from 'jsonpath-plus';
 import { useSettings } from '../../context/SettingsContext';
 
 export default function GenericWidget({ config }) {
-  const { refreshSignal } = useSettings();
+  const { refreshSignal, settings } = useSettings();
   const [displayData, setDisplayData] = useState(null);
   const [error, setError] = useState(null);
 
@@ -24,7 +24,14 @@ export default function GenericWidget({ config }) {
           }
         }
 
-        const response = await fetch(config.requestUrl, { headers });
+        let fetchUrl = config.requestUrl;
+        const corsProxy = settings?.global?.corsProxy;
+        if (corsProxy?.url) {
+          fetchUrl = corsProxy.url + config.requestUrl;
+          headers = { ...headers, ...corsProxy.headers };
+        }
+
+        const response = await fetch(fetchUrl, { headers });
         if (!response.ok) {
           setError(`HTTP ${response.status}`);
           return;

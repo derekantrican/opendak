@@ -51,7 +51,12 @@ function App() {
 
     try {
       const subreddit = s.global.backgroundSubreddit;
-      const response = await fetch(`https://www.reddit.com/r/${subreddit}/hot.json?limit=50`);
+      const corsProxy = s.global?.corsProxy;
+      const redditUrl = `https://www.reddit.com/r/${subreddit}/hot.json?limit=50`;
+      const response = await fetch(
+        corsProxy?.url ? corsProxy.url + redditUrl : redditUrl,
+        corsProxy?.url ? { headers: corsProxy.headers } : {},
+      );
       const data = await response.json();
 
       const landscapePosts = data.data.children.filter(
