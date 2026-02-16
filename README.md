@@ -1,5 +1,8 @@
 # OpenDak
 
+
+![](https://i.imgur.com/NNQBcrG.jpeg)
+
 An open-source, configurable dashboard inspired by [DakBoard](https://dakboard.com/). Display clocks, weather, calendars, and data from any API — all on top of a rotating wallpaper.
 
 ## Widget Types
