@@ -122,8 +122,15 @@ function App() {
             <WidgetRenderer widgets={settings.widgets} />
           ) : (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-              <Typography variant="h5" sx={{ opacity: 0.6 }}>
-                Click the ⚙️ icon to add widgets
+              <Typography variant="h5" sx={{
+                opacity: 0.8,
+                textAlign: 'center',
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                padding: '12px 24px',
+                borderRadius: '8px',
+              }}>
+                Welcome to OpenDak, the open-source dashboard!<br/>
+                Click the ⚙️ icon (top-right) to add widgets
               </Typography>
             </div>
           )}
