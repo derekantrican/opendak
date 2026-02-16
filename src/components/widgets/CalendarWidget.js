@@ -61,7 +61,8 @@ export default function CalendarWidget({ config }) {
         }
 
         if (calendarsData.length === 0) {
-          setCalendarEvents([]);
+          // Only clear events if we had no prior data
+          if (calendarEvents.length === 0) setCalendarEvents([]);
           return;
         }
 
@@ -70,14 +71,17 @@ export default function CalendarWidget({ config }) {
         setHeaderDate(hd);
         setError(null);
       } catch (err) {
-        setError(err.message);
+        console.error('CalendarWidget fetch error:', err);
+        if (calendarEvents.length === 0) {
+          setError(err.message);
+        }
       }
     };
 
     fetchCalendars();
   }, [refreshSignal]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (error) {
+  if (calendarEvents.length === 0 && error) {
     return <Typography color="error">Calendar error: {error}</Typography>;
   }
 

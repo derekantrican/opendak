@@ -34,7 +34,10 @@ export default function GenericWidget({ config }) {
 
         const response = await fetch(fetchUrl, { headers });
         if (!response.ok) {
-          setError(`HTTP ${response.status}`);
+          console.error(`GenericWidget HTTP ${response.status}`);
+          if (displayData === null)
+            setError(`HTTP ${response.status}`);
+          
           return;
         }
 
@@ -74,15 +77,20 @@ export default function GenericWidget({ config }) {
 
         setDisplayData(selected);
         setError(null);
-      } catch (err) {
-        setError(err.message);
+      } 
+      catch (err) {
+        console.error('GenericWidget fetch error:', err);
+        // Only set error if we have no prior data to show
+        if (displayData === null) {
+          setError(err.message);
+        }
       }
     };
 
     fetchData();
-  }, [refreshSignal, config.requestUrl, config.requestHeaders, config.dataSelector, config.displaySelector, config.maxItems]);
+  }, [refreshSignal, config.requestUrl, config.requestHeaders, config.dataSelector, config.displaySelector, config.maxItems]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (error) {
+  if (displayData === null && error) {
     return <Typography color="error">Error: {error}</Typography>;
   }
 

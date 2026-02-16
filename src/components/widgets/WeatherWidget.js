@@ -58,15 +58,19 @@ export default function WeatherWidget({ config }) {
           setWeatherData(data);
           setError(null);
         }
-      } catch (err) {
-        setError(err.message);
+      }
+      catch (err) {
+        console.error('WeatherWidget fetch error:', err);
+        if (!weatherData) {
+          setError(err.message);
+        }
       }
     };
 
     fetchWeather();
-  }, [refreshSignal, config.lat, config.lon, config.appid, config.units]);
+  }, [refreshSignal, config.lat, config.lon, config.appid, config.units]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (error) {
+  if (!weatherData && error) {
     return <Typography color="error">Weather error: {error}</Typography>;
   }
 
