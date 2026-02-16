@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   TextField, Select, MenuItem, FormControl, InputLabel,
   Checkbox, FormControlLabel, Button, Typography, IconButton,
@@ -128,8 +128,13 @@ function FieldRenderer({ field, value, onChange }) {
   );
 }
 
-export default function WidgetEditor({ widget, onChange, onCancel, isNew }) {
+export default function WidgetEditor({ widget, onChange, onCancel, isNew, onUpdate }) {
   const [localWidget, setLocalWidget] = useState({ ...widget });
+
+  // Keep parent in sync so it can access current state for the pinned Save button
+  useEffect(() => {
+    if (onUpdate) onUpdate(localWidget);
+  }, [localWidget]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleFieldChange = (key, value) => {
     setLocalWidget(prev => ({ ...prev, [key]: value }));
@@ -146,10 +151,6 @@ export default function WidgetEditor({ widget, onChange, onCancel, isNew }) {
       }
     }
     setLocalWidget({ ...fresh, ...preserved, id: localWidget.id });
-  };
-
-  const handleSave = () => {
-    onChange(localWidget);
   };
 
   const baseFields = getBaseFields();
@@ -203,15 +204,6 @@ export default function WidgetEditor({ widget, onChange, onCancel, isNew }) {
           onChange={(val) => handleFieldChange(field.key, val)}
         />
       ))}
-
-      <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
-        <Button variant="contained" onClick={handleSave} size="small">
-          {isNew ? 'Add' : 'Save'}
-        </Button>
-        <Button variant="outlined" onClick={onCancel} size="small">
-          Cancel
-        </Button>
-      </div>
     </div>
   );
 }

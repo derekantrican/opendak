@@ -124,9 +124,9 @@ export default function SettingsPanel({ settings, onSettingsChange }) {
         anchor="right"
         open={open}
         onClose={() => { setOpen(false); setEditingWidgetIndex(null); setEditingWidget(null); }}
-        PaperProps={{ sx: { width: 400, p: 2, display: 'flex', flexDirection: 'column' } }}
+        PaperProps={{ sx: { width: 400, p: 2, display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box', overflow: 'hidden' } }}
       >
-        <Box sx={{ flex: 1, overflow: 'auto' }}>
+        <Box sx={{ flex: 1, overflow: 'auto', minHeight: 0 }}>
           <Typography variant="h5" sx={{ mb: 1 }}>OpenDak Settings</Typography>
 
           {/* Import / Export */}
@@ -162,6 +162,7 @@ export default function SettingsPanel({ settings, onSettingsChange }) {
                 onChange={handleWidgetSave}
                 onCancel={handleWidgetCancel}
                 isNew={editingWidgetIndex === -1}
+                onUpdate={setEditingWidget}
               />
             ) : (
               <>
@@ -184,9 +185,21 @@ export default function SettingsPanel({ settings, onSettingsChange }) {
           </TabPanel>
         </Box>
 
+        {/* Pinned Save/Cancel bar when editing a widget */}
+        {editingWidgetIndex !== null && editingWidget && (
+          <Box sx={{ display: 'flex', gap: 1, pt: 1.5, pb: 0.5, borderTop: '1px solid rgba(0,0,0,0.12)' }}>
+            <Button variant="contained" onClick={() => handleWidgetSave(editingWidget)} size="small">
+              {editingWidgetIndex === -1 ? 'Add' : 'Save'}
+            </Button>
+            <Button variant="outlined" onClick={handleWidgetCancel} size="small">
+              Cancel
+            </Button>
+          </Box>
+        )}
+
         {/* Footer links — hidden when editing a widget */}
         {editingWidgetIndex === null && (
-          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1.5, pt: 1.5, pb: 1.5, borderTop: '1px solid rgba(0,0,0,0.12)' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1.5, pt: 1.5, borderTop: '1px solid rgba(0,0,0,0.12)' }}>
             <IconButton
               component="a"
               href="https://github.com/derekantrican/opendak"
