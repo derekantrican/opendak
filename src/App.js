@@ -7,6 +7,7 @@ import { createDefaultSettings, migrateOldSettings } from './models/settingsSche
 import { safeParseJSON } from './utils/jsonUtils';
 import WidgetRenderer from './components/WidgetRenderer';
 import SettingsPanel from './components/SettingsPanel';
+import MemoryMonitor from './components/MemoryMonitor';
 
 const darkTheme = createTheme({
   palette: { mode: 'dark' },
@@ -179,6 +180,7 @@ function App() {
         />
 
         <SettingsPanel settings={settings} onSettingsChange={handleSettingsChange} />
+        <MemoryMonitor />
       </SettingsContext.Provider>
     </ThemeProvider>
   );
