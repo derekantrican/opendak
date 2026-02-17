@@ -23,6 +23,7 @@ function App() {
 
   const settingsRef = useRef(settings);
   settingsRef.current = settings;
+  const bgUrlRef = useRef(null); // tracks current blob URL for cleanup
 
   // Load settings from localStorage on mount
   useEffect(() => {
@@ -81,7 +82,24 @@ function App() {
           imageUrl = suitable.url.replace(/&amp;/g, '&');
         }
 
-        setBackgroundImage({ ...randomPost.data, url: imageUrl });
+        // Download as blob and use object URL so we can explicitly free memory
+        try {
+          const imgResponse = await fetch(imageUrl);
+          const blob = await imgResponse.blob();
+
+          // Revoke the previous blob URL to free memory
+          if (bgUrlRef.current) {
+            URL.revokeObjectURL(bgUrlRef.current);
+          }
+
+          const blobUrl = URL.createObjectURL(blob);
+          bgUrlRef.current = blobUrl;
+          setBackgroundImage(blobUrl);
+        }
+        catch {
+          // If blob fetch fails, fall back to direct URL (won't auto-free but still works)
+          setBackgroundImage(imageUrl);
+        }
       }
     } catch (err) {
       console.error('Failed to fetch background:', err);
@@ -127,7 +145,7 @@ function App() {
           position: 'relative',
           height: 'calc(100% - 2px)',
           width: '100%',
-          backgroundImage: backgroundImage?.url ? `url(${backgroundImage.url})` : undefined,
+          backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
