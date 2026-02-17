@@ -26,14 +26,14 @@ const baseFields = [
   { key: 'textAlign', label: 'Text Align', type: 'select', options: ['left', 'right'], default: 'left' },
   { key: 'backgroundColor', label: 'Background Color', type: 'text', placeholder: 'e.g. rgba(134,122,122,0.36) or #867A7A5C' },
   { key: 'fontSize', label: 'Font Size', type: 'select', options: ['small', 'medium', 'large'], default: 'medium' },
-  { key: 'x', label: 'Position X', type: 'text', placeholder: 'e.g. 10% or 200px' },
-  { key: 'y', label: 'Position Y', type: 'text', placeholder: 'e.g. 10% or 100px' },
-  { key: 'width', label: 'Width', type: 'text', placeholder: 'e.g. 300px or 25%' },
-  { key: 'height', label: 'Height', type: 'text', placeholder: 'e.g. 200px or 35%' },
+  { key: 'x', label: 'Position X', type: 'text', placeholder: "pixels, %, 'center', or 'right:0'" },
+  { key: 'y', label: 'Position Y', type: 'text', placeholder: "pixels, %, 'center', or 'bottom:0'" },
+  { key: 'width', label: 'Width', type: 'text', placeholder: 'pixels or % (e.g. 300 or 25%)' },
+  { key: 'height', label: 'Height', type: 'text', placeholder: 'pixels or % (e.g. 200 or 35%)' },
 ];
 
 const clockFields = [
-  { key: 'timezone', label: 'Timezone', type: 'text', placeholder: 'e.g. local, Asia/Istanbul, America/New_York', default: 'local' },
+  { key: 'timezone', label: 'Timezone', type: 'text', placeholder: "'local' or IANA zone (e.g. America/New_York)", default: 'local' },
   { key: 'format', label: 'Time Format', type: 'select', options: ['24h', '12h'], default: '24h' },
   { key: 'showSeconds', label: 'Show Seconds', type: 'checkbox', default: false },
   { key: 'showDate', label: 'Show Date', type: 'checkbox', default: true },
@@ -44,7 +44,7 @@ const weatherFields = [
   { key: 'lon', label: 'Longitude', type: 'text', placeholder: 'e.g. -74.0060' },
   { key: 'appid', label: 'OpenWeather API Key', type: 'text', placeholder: 'Your OpenWeatherMap API key' },
   { key: 'units', label: 'Units', type: 'select', options: ['imperial', 'metric'], default: 'imperial' },
-  { key: 'forecastDays', label: 'Forecast Days', type: 'text', placeholder: 'e.g. 4', default: '4' },
+  { key: 'forecastDays', label: 'Forecast Days', type: 'text', placeholder: 'Number of days (e.g. 4)', default: '4' },
 ];
 
 const calendarFields = [
@@ -55,8 +55,8 @@ const genericFields = [
   { key: 'requestUrl', label: 'Request URL', type: 'text', placeholder: 'https://api.example.com/data' },
   { key: 'requestHeaders', label: 'Request Headers (JSON)', type: 'textarea', placeholder: '{"Authorization": "Bearer xxx"}', default: '{}' },
   { key: 'dataSelector', label: 'Data Selector (JSONPath)', type: 'text', placeholder: 'e.g. $.items[?(@.type=="video")]' },
-  { key: 'displaySelector', label: 'Display Selector', type: 'text', placeholder: 'e.g. title (property within each item)' },
-  { key: 'maxItems', label: 'Max Items', type: 'text', placeholder: 'e.g. 5' },
+  { key: 'displaySelector', label: 'Display Selector', type: 'text', placeholder: 'Property name to show (e.g. title)' },
+  { key: 'maxItems', label: 'Max Items', type: 'text', placeholder: 'Limit results (e.g. 5)' },
 ];
 
 export const widgetTypeConfig = {
