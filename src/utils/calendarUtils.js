@@ -11,8 +11,11 @@ const recursOn = (event, precomputedExdates, date) => {
     }
 
     const compareResult = compareDateOnly(next.toJSDate(), date);
-    if (compareResult === 0) return true;
-    if (compareResult === 1) return false;
+    if (compareResult === 0) 
+      return true;
+
+    if (compareResult === 1) 
+      return false;
   }
 
   return false;
@@ -31,13 +34,16 @@ export const getEventsForDate = (events, exDateMap, date) => {
         e.instanceStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), eventStart.getHours(), eventStart.getMinutes());
         const duration = e.endDate.toJSDate().getTime() - eventStart.getTime();
         e.instanceEnd = new Date(e.instanceStart.getTime() + duration);
+
         return true;
       }
+
       return false;
     }
 
     e.instanceStart = e.startDate.toJSDate();
     e.instanceEnd = e.endDate.toJSDate();
+
     return compareDateOnly(e.startDate.toJSDate(), date) === 0;
   });
 };
@@ -62,10 +68,14 @@ export const parseCalendarData = (icalData, calendarColor) => {
       exdates = event.component.getAllProperties('exdate').flatMap(d =>
         d.getValues().map(exdate => new Date(exdate))
       );
-      if (exdates.length === 0) continue;
-    } else if (event.isRecurrenceException()) {
+
+      if (exdates.length === 0) 
+        continue;
+    } 
+    else if (event.isRecurrenceException()) {
       exdates = [event.component.getFirstPropertyValue('recurrence-id').toJSDate()];
-    } else {
+    }
+    else {
       continue;
     }
 
@@ -85,7 +95,9 @@ export const getCalendarEventsForDisplay = (calendarsData, dateTime) => {
   const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
 
   for (const cal of calendarsData) {
-    if (!cal.events || !cal.exDateMap) continue;
+    if (!cal.events || !cal.exDateMap)
+      continue;
+
     cal.eventsForToday = getEventsForDate(cal.events, cal.exDateMap, today)
       .filter(e => e.instanceEnd > dateTime);
   }
@@ -96,12 +108,16 @@ export const getCalendarEventsForDisplay = (calendarsData, dateTime) => {
   if (eventsToShow.length === 0) {
     headerDate = tomorrow;
     for (const cal of calendarsData) {
-      if (!cal.events || !cal.exDateMap) continue;
+      if (!cal.events || !cal.exDateMap) 
+        continue;
+      
       cal.eventsForTomorrow = getEventsForDate(cal.events, cal.exDateMap, tomorrow);
     }
+
     eventsToShow = calendarsData.flatMap(c => c.eventsForTomorrow || []);
   }
 
   eventsToShow.sort((a, b) => compareDates(a.instanceStart, b.instanceStart));
+  
   return { events: eventsToShow, headerDate };
 };

@@ -34,6 +34,14 @@ export default function GenericWidget({ config }) {
           headers = { ...headers, ...safeParseJSON(corsProxy.headers) };
         }
 
+        const logMem = (label) => {
+          if (performance.memory) {
+            const used = (performance.memory.usedJSHeapSize / 1024 / 1024).toFixed(1);
+            console.log(`[Generic Memory] ${label}: ${used} MB`);
+          }
+        };
+
+        logMem(`fetch START (${config.requestUrl})`);
         const response = await fetch(fetchUrl, { headers });
         if (!response.ok) {
           console.error(`GenericWidget HTTP ${response.status}`);
@@ -44,6 +52,7 @@ export default function GenericWidget({ config }) {
         }
 
         const json = await response.json();
+        logMem('after JSON parse');
 
         // Apply data selector (JSONPath)
         let selected = json;

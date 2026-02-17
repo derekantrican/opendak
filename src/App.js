@@ -52,6 +52,15 @@ function App() {
     const s = settingsRef.current;
     if (!s?.global?.backgroundSubreddit) return;
 
+    const logMem = (label) => {
+      if (performance.memory) {
+        const used = (performance.memory.usedJSHeapSize / 1024 / 1024).toFixed(1);
+        console.log(`[BG Memory] ${label}: ${used} MB`);
+      }
+    };
+
+    logMem('fetchBackground START');
+
     try {
       const subreddit = s.global.backgroundSubreddit;
       const corsProxy = s.global?.corsProxy;
@@ -61,6 +70,7 @@ function App() {
         corsProxy?.url ? { headers: safeParseJSON(corsProxy.headers) } : {},
       );
       const data = await response.json();
+      logMem('after Reddit JSON parse');
 
       const landscapePosts = data.data.children.filter(
         p => !p.data.is_self &&
@@ -81,12 +91,13 @@ function App() {
           const suitable = preview.resolutions.find(r => r.width >= screenWidth)
             || preview.resolutions[preview.resolutions.length - 1];
           imageUrl = suitable.url.replace(/&amp;/g, '&');
-        }
+                }
 
         // Download as blob and use object URL so we can explicitly free memory
         try {
           const imgResponse = await fetch(imageUrl);
           const blob = await imgResponse.blob();
+          logMem(`after image blob (${(blob.size / 1024).toFixed(0)} KB)`);
 
           // Revoke the previous blob URL to free memory
           if (bgUrlRef.current) {
