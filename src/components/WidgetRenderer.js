@@ -7,6 +7,7 @@ import WeatherWidget from './widgets/WeatherWidget';
 import CalendarWidget from './widgets/CalendarWidget';
 import GenericWidget from './widgets/GenericWidget';
 import WebpageWidget from './widgets/WebpageWidget';
+import FeedWidget from './widgets/FeedWidget';
 
 const widgetComponentMap = {
   [WIDGET_TYPES.CLOCK]: ClockWidget,
@@ -14,6 +15,7 @@ const widgetComponentMap = {
   [WIDGET_TYPES.CALENDAR]: CalendarWidget,
   [WIDGET_TYPES.GENERIC]: GenericWidget,
   [WIDGET_TYPES.WEBPAGE]: WebpageWidget,
+  [WIDGET_TYPES.FEED]: FeedWidget,
 };
 
 class WidgetErrorBoundary extends React.Component {

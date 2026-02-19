@@ -62,10 +62,10 @@ export default function WidgetShell({ config, children }) {
 
   const bgStyle = bg
     ? { backgroundColor: bg, borderRadius: '0.3em', padding: '10px' }
-    : {};
+    : { padding: '8px' };
 
   return (
-    <div style={{ ...positionStyle, ...bgStyle }}>
+    <div style={{ ...positionStyle, ...bgStyle, overflow: 'hidden' }}>
       {title && (
         <Typography variant="h5" sx={{ marginBottom: '8px' }}>{title}</Typography>
       )}

@@ -6,6 +6,7 @@ export const WIDGET_TYPES = {
   CALENDAR: 'calendar',
   GENERIC: 'generic',
   WEBPAGE: 'webpage',
+  FEED: 'feed',
 };
 
 export const FONT_SIZES = {
@@ -65,6 +66,14 @@ const webpageFields = [
   { key: 'url', label: 'URL', type: 'text', placeholder: 'https://example.com' },
 ];
 
+const feedFields = [
+  { key: 'feedUrl', label: 'Feed URL', type: 'text', placeholder: 'https://example.com/rss.xml' },
+  { key: 'maxItems', label: 'Max Items', type: 'text', placeholder: 'Number of stories to rotate (e.g. 10)', default: '10' },
+  { key: 'displayTime', label: 'Item Display Time (seconds)', type: 'text', placeholder: 'Seconds per item (e.g. 15)', default: '15' },
+  { key: 'maxTitleChars', label: 'Max Title Characters', type: 'text', placeholder: 'e.g. 80 (blank = no limit)' },
+  { key: 'maxDescChars', label: 'Max Description Characters', type: 'text', placeholder: 'e.g. 120 (blank = no limit)' },
+];
+
 export const widgetTypeConfig = {
   [WIDGET_TYPES.CLOCK]: {
     label: 'Clock',
@@ -90,6 +99,11 @@ export const widgetTypeConfig = {
     label: 'Webpage',
     description: 'Embed any webpage in an iframe. The page reloads on each data refresh interval. (Note: some sites may block embedding in iframes and will not render in this widget)',
     fields: webpageFields,
+  },
+  [WIDGET_TYPES.FEED]: {
+    label: 'Feed',
+    description: 'Rotating feed viewer — cycles through items from an RSS/Atom feed with fade transitions and a progress bar. Useful for news, blogs, podcasts, etc.',
+    fields: feedFields,
   },
 };
 
