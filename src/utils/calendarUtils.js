@@ -48,6 +48,30 @@ export const getEventsForDate = (events, exDateMap, date) => {
   });
 };
 
+/**
+ * Check if a raw VEVENT component *might* be relevant for today or tomorrow.
+ * This is a fast pre-filter that avoids creating expensive ICAL.Event objects
+ * for the vast majority of events (past/future single-occurrence events).
+ *
+ * We keep an event if:
+ *  - It has an RRULE (recurring — needs full evaluation)
+ *  - It is a recurrence exception (RECURRENCE-ID)
+ *  - Its DTSTART falls on today or tomorrow
+ */
+const isEventPotentiallyRelevant = (veventComponent, today, tomorrow) => {
+  // Always keep recurring events and recurrence exceptions — they need full evaluation
+  if (veventComponent.hasProperty('rrule') || veventComponent.hasProperty('recurrence-id')) {
+    return true;
+  }
+
+  // For single-occurrence events, check DTSTART against today/tomorrow
+  const dtstart = veventComponent.getFirstPropertyValue('dtstart');
+  if (!dtstart) return false;
+
+  const startDate = dtstart.toJSDate();
+  return compareDateOnly(startDate, today) === 0 || compareDateOnly(startDate, tomorrow) === 0;
+};
+
 export const parseCalendarData = (icalData, calendarColor) => {
   const component = new ICAL.Component(ICAL.parse(icalData));
 
@@ -56,7 +80,15 @@ export const parseCalendarData = (icalData, calendarColor) => {
     ICAL.TimezoneService.register(tz);
   }
 
-  const events = component.getAllSubcomponents('vevent').map(e => new ICAL.Event(e));
+  // Pre-filter: only create ICAL.Event objects for potentially relevant VEVENTs
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+
+  const allVevents = component.getAllSubcomponents('vevent');
+  const relevantVevents = allVevents.filter(v => isEventPotentiallyRelevant(v, today, tomorrow));
+
+  const events = relevantVevents.map(e => new ICAL.Event(e));
 
   const exDateMap = {};
   for (const event of events) {
