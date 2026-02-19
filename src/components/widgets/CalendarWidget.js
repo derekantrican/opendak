@@ -38,16 +38,8 @@ export default function CalendarWidget({ config }) {
   useEffect(() => {
     if (calendars.length === 0) return;
 
-    const logMem = (label) => {
-      if (performance.memory) {
-        const used = (performance.memory.usedJSHeapSize / 1024 / 1024).toFixed(1);
-        console.log(`[Calendar Memory] ${label}: ${used} MB`);
-      }
-    };
-
     const fetchCalendars = async () => {
       try {
-        logMem('fetchCalendars START');
         const corsProxy = settings?.global?.corsProxy || { url: '', headers: {} };
         const proxyHeaders = safeParseJSON(corsProxy.headers);
         const calendarsData = [];
@@ -60,9 +52,7 @@ export default function CalendarWidget({ config }) {
 
             if (response.ok) {
               const icalData = await response.text();
-              logMem(`before parse calendar (${(icalData.length / 1024).toFixed(0)} KB text)`);
               const parsed = parseCalendarData(icalData, cal.color);
-              logMem(`after parse calendar (${parsed.events.length} events)`);
               calendarsData.push(parsed);
             }
           } catch (calErr) {
