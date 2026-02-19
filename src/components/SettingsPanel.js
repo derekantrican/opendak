@@ -5,6 +5,7 @@ import {
 import SettingsIcon from '@mui/icons-material/Settings';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import GlobalSettingsForm from './settings/GlobalSettingsForm';
 import WidgetList from './settings/WidgetList';
@@ -101,6 +102,74 @@ export default function SettingsPanel({ settings, onSettingsChange }) {
     input.click();
   };
 
+  const handleDemo = () => {
+    const demoSettings = {
+      global: {
+        backgroundSubreddit: 'EarthPorn',
+        backgroundTransition: false,
+        corsProxy: { url: '', headers: '{}' },
+      },
+      widgets: [
+        {
+          id: 'demo-clock',
+          type: 'clock',
+          title: '',
+          textAlign: 'left',
+          backgroundColor: '',
+          fontSize: 'large',
+          x: 'center',
+          y: 'center',
+          width: '',
+          height: '',
+          timezone: 'local',
+          format: '24h',
+          showSeconds: true,
+          showDate: true,
+        },
+        {
+          id: 'demo-weather',
+          type: 'weather',
+          title: '',
+          textAlign: 'left',
+          backgroundColor: 'rgba(134, 122, 122, 0.36)',
+          fontSize: 'medium',
+          x: '0px',
+          y: 'bottom:0px',
+          width: '600px',
+          height: '200px',
+          provider: 'openmeteo',
+          lat: '40.7128',
+          lon: '-74.006',
+          units: 'imperial',
+          forecastDays: '4',
+        },
+        {
+          id: 'demo-calendar',
+          type: 'calendar',
+          title: '',
+          textAlign: 'left',
+          backgroundColor: 'rgba(134, 122, 122, 0.36)',
+          fontSize: 'medium',
+          x: 'right:0px',
+          y: 'bottom:0px',
+          width: '24%',
+          height: '35%',
+          calendars: [
+            {
+              url: 'https://calendar.google.com/calendar/ical/en.usa%23holiday%40group.v.calendar.google.com/public/basic.ics',
+              color: '#4285F4',
+            },
+            {
+              url: window.location.origin + '/demo.ics',
+              color: '#F4B400',
+            },
+          ],
+        },
+      ],
+    };
+    onSettingsChange(demoSettings);
+  };
+
   return (
     <>
       {/* Gear icon — fixed in top-right corner */}
@@ -136,6 +205,9 @@ export default function SettingsPanel({ settings, onSettingsChange }) {
             </Button>
             <Button startIcon={<FileUploadIcon />} onClick={handleImport} size="small" variant="outlined">
               Import
+            </Button>
+            <Button startIcon={<PlayArrowIcon />} onClick={handleDemo} size="small" variant="outlined">
+              Demo
             </Button>
           </div>
 
