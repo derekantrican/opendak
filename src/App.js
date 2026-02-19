@@ -84,7 +84,7 @@ function App() {
           const suitable = preview.resolutions.find(r => r.width >= screenWidth)
             || preview.resolutions[preview.resolutions.length - 1];
           imageUrl = suitable.url.replace(/&amp;/g, '&');
-                }
+        }
 
         // Download as blob and use object URL so we can explicitly free memory
         try {

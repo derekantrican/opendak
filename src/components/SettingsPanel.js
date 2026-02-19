@@ -51,7 +51,8 @@ export default function SettingsPanel({ settings, onSettingsChange }) {
     if (editingWidgetIndex === -1) {
       // Adding new
       updatedWidgets = [...(settings.widgets || []), widget];
-    } else {
+    }
+    else {
       // Editing existing
       updatedWidgets = settings.widgets.map((w, i) =>
         i === editingWidgetIndex ? widget : w
@@ -85,7 +86,8 @@ export default function SettingsPanel({ settings, onSettingsChange }) {
     input.accept = '.json';
     input.onchange = (e) => {
       const file = e.target.files[0];
-      if (!file) return;
+      if (!file) 
+        return;
       const reader = new FileReader();
       reader.onload = (ev) => {
         try {
@@ -93,7 +95,8 @@ export default function SettingsPanel({ settings, onSettingsChange }) {
           if (imported.global && imported.widgets) {
             onSettingsChange(imported);
           }
-        } catch {
+        }
+        catch {
           alert('Invalid settings file');
         }
       };
@@ -192,7 +195,9 @@ export default function SettingsPanel({ settings, onSettingsChange }) {
       <Drawer
         anchor="right"
         open={open}
-        onClose={() => { setOpen(false); setEditingWidgetIndex(null); setEditingWidget(null); }}
+        onClose={() => {
+          setOpen(false); setEditingWidgetIndex(null); setEditingWidget(null); 
+        }}
         PaperProps={{ sx: { width: 400, p: 2, display: 'flex', flexDirection: 'column', height: '100%', boxSizing: 'border-box', overflow: 'hidden' } }}
       >
         <Box sx={{ flex: 1, overflow: 'auto', minHeight: 0 }}>
@@ -213,7 +218,9 @@ export default function SettingsPanel({ settings, onSettingsChange }) {
 
           <Divider />
 
-          <Tabs value={tab} onChange={(_, v) => { setTab(v); setEditingWidgetIndex(null); setEditingWidget(null); }} sx={{ mb: 1 }}>
+          <Tabs value={tab} onChange={(_, v) => {
+            setTab(v); setEditingWidgetIndex(null); setEditingWidget(null); 
+          }} sx={{ mb: 1 }}>
             <Tab label="Global" />
             <Tab label="Widgets" />
           </Tabs>

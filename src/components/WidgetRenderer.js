@@ -41,7 +41,8 @@ class WidgetErrorBoundary extends React.Component {
 }
 
 export default function WidgetRenderer({ widgets }) {
-  if (!widgets || widgets.length === 0) return null;
+  if (!widgets || widgets.length === 0) 
+    return null;
 
   return (
     <>

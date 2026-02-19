@@ -18,18 +18,30 @@ const owmIconMap = {
 
 // Map WMO weather codes (Open-Meteo) to Bootstrap Icons
 const wmoIconMap = (code) => {
-  if (code === 0) return 'sun';
-  if (code === 1 || code === 2) return 'cloud-sun';
-  if (code === 3) return 'cloudy';
-  if (code >= 45 && code <= 48) return 'cloud-haze';
-  if (code >= 51 && code <= 55) return 'cloud-drizzle';
-  if (code >= 56 && code <= 57) return 'cloud-drizzle';
-  if (code >= 61 && code <= 65) return 'cloud-rain';
-  if (code >= 66 && code <= 67) return 'cloud-rain';
-  if (code >= 71 && code <= 77) return 'snow';
-  if (code >= 80 && code <= 82) return 'cloud-rain';
-  if (code >= 85 && code <= 86) return 'snow';
-  if (code >= 95 && code <= 99) return 'cloud-lightning';
+  if (code === 0) 
+    return 'sun';
+  if (code === 1 || code === 2) 
+    return 'cloud-sun';
+  if (code === 3) 
+    return 'cloudy';
+  if (code >= 45 && code <= 48) 
+    return 'cloud-haze';
+  if (code >= 51 && code <= 55) 
+    return 'cloud-drizzle';
+  if (code >= 56 && code <= 57) 
+    return 'cloud-drizzle';
+  if (code >= 61 && code <= 65) 
+    return 'cloud-rain';
+  if (code >= 66 && code <= 67) 
+    return 'cloud-rain';
+  if (code >= 71 && code <= 77) 
+    return 'snow';
+  if (code >= 80 && code <= 82) 
+    return 'cloud-rain';
+  if (code >= 85 && code <= 86) 
+    return 'snow';
+  if (code >= 95 && code <= 99) 
+    return 'cloud-lightning';
   return 'cloud';
 };
 
@@ -99,8 +111,10 @@ export default function WeatherWidget({ config }) {
   const provider = config.provider || 'openmeteo';
 
   useEffect(() => {
-    if (!config.lat || !config.lon) return;
-    if (provider === 'openweathermap' && !config.appid) return;
+    if (!config.lat || !config.lon) 
+      return;
+    if (provider === 'openweathermap' && !config.appid) 
+      return;
 
     const fetchWeather = async () => {
       try {
@@ -110,7 +124,8 @@ export default function WeatherWidget({ config }) {
         if (provider === 'openweathermap') {
           url = `https://api.openweathermap.org/data/3.0/onecall?lat=${config.lat}&lon=${config.lon}&appid=${config.appid}&units=${config.units || 'imperial'}&exclude=minutely,hourly`;
           normalize = normalizeOWM;
-        } else {
+        }
+        else {
           const tempUnit = (config.units || 'imperial') === 'imperial' ? 'fahrenheit' : 'celsius';
           url = `https://api.open-meteo.com/v1/forecast?latitude=${config.lat}&longitude=${config.lon}&current=temperature_2m,apparent_temperature,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code&temperature_unit=${tempUnit}&forecast_days=${forecastDays}&timezone=auto`;
           normalize = normalizeOpenMeteo;

@@ -45,7 +45,8 @@ export default function MemoryMonitor() {
     return () => clearInterval(interval);
   }, []);
 
-  if (!showOverlay || !memInfo) return null;
+  if (!showOverlay || !memInfo) 
+    return null;
 
   return (
     <div style={{

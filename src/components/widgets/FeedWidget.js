@@ -4,15 +4,19 @@ import { useSettings } from '../../context/SettingsContext';
 import { fontSizeMap } from '../../models/settingsSchema';
 
 function truncate(text, max) {
-  if (!text) return '';
-  if (!max) return text;
+  if (!text) 
+    return '';
+  if (!max) 
+    return text;
   const limit = parseInt(max, 10);
-  if (isNaN(limit) || text.length <= limit) return text;
+  if (isNaN(limit) || text.length <= limit) 
+    return text;
   return text.slice(0, limit) + '…';
 }
 
 function stripHtml(html) {
-  if (!html) return '';
+  if (!html) 
+    return '';
   const doc = new DOMParser().parseFromString(html, 'text/html');
   return doc.body.textContent || '';
 }
@@ -59,7 +63,8 @@ export default function FeedWidget({ config }) {
 
   // Fetch feed
   const fetchFeed = useCallback(async () => {
-    if (!config.feedUrl) return;
+    if (!config.feedUrl) 
+      return;
 
     try {
       let fetchUrl = config.feedUrl;
@@ -71,7 +76,8 @@ export default function FeedWidget({ config }) {
           headers = typeof corsProxy.headers === 'string'
             ? JSON.parse(corsProxy.headers)
             : (corsProxy.headers || {});
-        } catch { /* ignore */ }
+        }
+        catch { /* ignore */ }
       }
 
       const response = await fetch(fetchUrl, { headers });
@@ -89,10 +95,12 @@ export default function FeedWidget({ config }) {
         setCurrentIndex(0);
         setProgress(0);
         setError(null);
-      } else {
+      }
+      else {
         setError('No items found in feed');
       }
-    } catch (err) {
+    }
+    catch (err) {
       setError(err.message);
     }
   }, [config.feedUrl, maxItems, settings?.global?.corsProxy]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -104,7 +112,8 @@ export default function FeedWidget({ config }) {
 
   // Rotation timer
   useEffect(() => {
-    if (items.length <= 1) return;
+    if (items.length <= 1) 
+      return;
 
     // Progress bar updates
     const progressInterval = 50; // ms

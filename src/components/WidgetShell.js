@@ -2,7 +2,8 @@ import { Typography } from '@mui/material';
 
 // If a value is a bare number (e.g. "200" or 200), append "px"
 function cssUnit(val) {
-  if (val == null || val === '') return undefined;
+  if (val == null || val === '') 
+    return undefined;
   const s = String(val);
   return /^\d+(\.\d+)?$/.test(s) ? s + 'px' : s;
 }
@@ -32,9 +33,11 @@ export default function WidgetShell({ config, children }) {
   if (x === 'center') {
     positionStyle.left = '50%';
     translateX = '-50%';
-  } else if (x && String(x).startsWith('right:')) {
+  }
+  else if (x && String(x).startsWith('right:')) {
     positionStyle.right = cssUnit(String(x).slice(6));
-  } else {
+  }
+  else {
     positionStyle.left = cssUnit(x);
   }
 
@@ -43,9 +46,11 @@ export default function WidgetShell({ config, children }) {
   if (y === 'center') {
     positionStyle.top = '50%';
     translateY = '-50%';
-  } else if (y && String(y).startsWith('bottom:')) {
+  }
+  else if (y && String(y).startsWith('bottom:')) {
     positionStyle.bottom = cssUnit(String(y).slice(7));
-  } else {
+  }
+  else {
     positionStyle.top = cssUnit(y);
   }
 

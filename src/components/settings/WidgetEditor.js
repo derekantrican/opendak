@@ -133,7 +133,8 @@ export default function WidgetEditor({ widget, onChange, onCancel, isNew, onUpda
 
   // Keep parent in sync so it can access current state for the pinned Save button
   useEffect(() => {
-    if (onUpdate) onUpdate(localWidget);
+    if (onUpdate) 
+      onUpdate(localWidget);
   }, [localWidget]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleFieldChange = (key, value) => {
@@ -155,7 +156,8 @@ export default function WidgetEditor({ widget, onChange, onCancel, isNew, onUpda
 
   const baseFields = getBaseFields();
   const typeFields = getFieldsForType(localWidget.type).filter(field => {
-    if (!field.visibleWhen) return true;
+    if (!field.visibleWhen) 
+      return true;
     return Object.entries(field.visibleWhen).every(([key, val]) => localWidget[key] === val);
   });
 
