@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Divider, Typography } from '@mui/material';
 import { useSettings } from '../../context/SettingsContext';
 import { compareDateOnly } from '../../utils/dateUtils';
@@ -32,11 +32,13 @@ export default function CalendarWidget({ config }) {
   const [calendarEvents, setCalendarEvents] = useState([]);
   const [headerDate, setHeaderDate] = useState(new Date());
   const [error, setError] = useState(null);
+  const calendarCache = useRef({});
 
   const calendars = config.calendars || [];
 
   useEffect(() => {
-    if (calendars.length === 0) return;
+    if (calendars.length === 0) 
+      return;
 
     const fetchCalendars = async () => {
       try {
@@ -53,16 +55,25 @@ export default function CalendarWidget({ config }) {
             if (response.ok) {
               const icalData = await response.text();
               const parsed = parseCalendarData(icalData, cal.color);
+              calendarCache.current[cal.url] = parsed;
               calendarsData.push(parsed);
+            } 
+            else if (calendarCache.current[cal.url]) {
+              calendarsData.push(calendarCache.current[cal.url]);
             }
-          } catch (calErr) {
+          } 
+          catch (calErr) {
             console.error('Failed to fetch/parse calendar:', calErr);
+            if (calendarCache.current[cal.url]) {
+              calendarsData.push(calendarCache.current[cal.url]);
+            }
           }
         }
 
         if (calendarsData.length === 0) {
-          // Only clear events if we had no prior data
-          if (calendarEvents.length === 0) setCalendarEvents([]);
+          if (calendarEvents.length === 0) 
+            setCalendarEvents([]);
+          
           return;
         }
 
@@ -70,7 +81,8 @@ export default function CalendarWidget({ config }) {
         setCalendarEvents(events);
         setHeaderDate(hd);
         setError(null);
-      } catch (err) {
+      } 
+      catch (err) {
         console.error('CalendarWidget fetch error:', err);
         if (calendarEvents.length === 0) {
           setError(err.message);

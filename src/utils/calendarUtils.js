@@ -66,7 +66,8 @@ const isEventPotentiallyRelevant = (veventComponent, today, tomorrow) => {
 
   // For single-occurrence events, check DTSTART against today/tomorrow
   const dtstart = veventComponent.getFirstPropertyValue('dtstart');
-  if (!dtstart) return false;
+  if (!dtstart) 
+    return false;
 
   const startDate = dtstart.toJSDate();
   return compareDateOnly(startDate, today) === 0 || compareDateOnly(startDate, tomorrow) === 0;
