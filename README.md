@@ -72,3 +72,43 @@ $.items[?(@.type=='video' && toDate(@.created) > daysAgo(5))]
 ## Try It
 
 Visit **[opendak.app](https://opendak.app)** — click the ⚙️ to configure your widgets, or import a pre-made settings JSON via the Import button.
+
+## Self-Hosting with Docker
+
+If you'd prefer to host OpenDak yourself instead of using the public site, a Dockerfile is included.
+
+### Build and Run
+
+```bash
+docker build -t opendak .
+docker run -d -p 8080:80 opendak
+```
+
+Then open **http://localhost:8080** in your browser.
+
+### Custom Port
+
+Map to any host port you like:
+
+```bash
+docker run -d -p 3000:80 opendak
+```
+
+### Docker Compose
+
+Create a `docker-compose.yml`:
+
+```yaml
+services:
+  opendak:
+    build: .
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+```
+
+Then run:
+
+```bash
+docker compose up -d
+```
