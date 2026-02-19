@@ -154,7 +154,10 @@ export default function WidgetEditor({ widget, onChange, onCancel, isNew, onUpda
   };
 
   const baseFields = getBaseFields();
-  const typeFields = getFieldsForType(localWidget.type);
+  const typeFields = getFieldsForType(localWidget.type).filter(field => {
+    if (!field.visibleWhen) return true;
+    return Object.entries(field.visibleWhen).every(([key, val]) => localWidget[key] === val);
+  });
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>

@@ -40,9 +40,10 @@ const clockFields = [
 ];
 
 const weatherFields = [
+  { key: 'provider', label: 'Weather Provider', type: 'select', options: ['openmeteo', 'openweathermap'], default: 'openmeteo' },
   { key: 'lat', label: 'Latitude', type: 'text', placeholder: 'e.g. 40.7128' },
   { key: 'lon', label: 'Longitude', type: 'text', placeholder: 'e.g. -74.0060' },
-  { key: 'appid', label: 'OpenWeather API Key', type: 'text', placeholder: 'Your OpenWeatherMap API key' },
+  { key: 'appid', label: 'OpenWeather API Key', type: 'text', placeholder: 'Your OpenWeatherMap API key', visibleWhen: { provider: 'openweathermap' } },
   { key: 'units', label: 'Units', type: 'select', options: ['imperial', 'metric'], default: 'imperial' },
   { key: 'forecastDays', label: 'Forecast Days', type: 'text', placeholder: 'Number of days (e.g. 4)', default: '4' },
 ];
