@@ -68,22 +68,27 @@ const webpageFields = [
 export const widgetTypeConfig = {
   [WIDGET_TYPES.CLOCK]: {
     label: 'Clock',
+    description: 'Display a clock with configurable timezone, 12/24h format, and optional date.',
     fields: clockFields,
   },
   [WIDGET_TYPES.WEATHER]: {
     label: 'Weather',
+    description: 'Show current conditions and a multi-day forecast using Open-Meteo or OpenWeatherMap.',
     fields: weatherFields,
   },
   [WIDGET_TYPES.CALENDAR]: {
     label: 'Calendar',
+    description: 'Display upcoming events from one or more iCal calendar feeds.',
     fields: calendarFields,
   },
   [WIDGET_TYPES.GENERIC]: {
     label: 'Generic',
+    description: 'Fetch JSON from any API and display selected fields using JSONPath selectors.',
     fields: genericFields,
   },
   [WIDGET_TYPES.WEBPAGE]: {
     label: 'Webpage',
+    description: 'Embed any webpage in an iframe. The page reloads on each data refresh interval. (Note: some sites may block embedding in iframes and will not render in this widget)',
     fields: webpageFields,
   },
 };
@@ -92,6 +97,10 @@ export const getBaseFields = () => baseFields;
 
 export const getFieldsForType = (type) => {
   return widgetTypeConfig[type]?.fields ?? [];
+};
+
+export const getDescriptionForType = (type) => {
+  return widgetTypeConfig[type]?.description ?? '';
 };
 
 // ---------- Default settings ----------

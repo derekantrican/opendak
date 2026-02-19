@@ -6,7 +6,7 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { getBaseFields, getFieldsForType, WIDGET_TYPES, createWidget } from '../../models/settingsSchema';
+import { getBaseFields, getFieldsForType, getDescriptionForType, WIDGET_TYPES, createWidget } from '../../models/settingsSchema';
 import { isValidJSON } from '../../utils/jsonUtils';
 
 function CalendarListEditor({ value, onChange }) {
@@ -179,6 +179,12 @@ export default function WidgetEditor({ widget, onChange, onCancel, isNew, onUpda
           ))}
         </Select>
       </FormControl>
+
+      {getDescriptionForType(localWidget.type) && (
+        <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
+          {getDescriptionForType(localWidget.type)}
+        </Typography>
+      )}
 
       <Divider />
       <Typography variant="subtitle2" color="text.secondary">Layout & Appearance</Typography>
