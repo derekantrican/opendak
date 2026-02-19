@@ -33,10 +33,12 @@ function App() {
       try {
         const parsed = JSON.parse(stored);
         setSettings(migrateOldSettings(parsed));
-      } catch {
+      } 
+      catch {
         setSettings(createDefaultSettings());
       }
-    } else {
+    } 
+    else {
       setSettings(createDefaultSettings());
     }
   }, []);
@@ -50,7 +52,8 @@ function App() {
   // Background image fetching
   const fetchBackground = useCallback(async () => {
     const s = settingsRef.current;
-    if (!s?.global?.backgroundSubreddit) return;
+    if (!s?.global?.backgroundSubreddit)
+      return;
 
     const logMem = (label) => {
       if (performance.memory) {
@@ -113,14 +116,16 @@ function App() {
           setBackgroundImage(imageUrl);
         }
       }
-    } catch (err) {
+    } 
+    catch (err) {
       console.error('Failed to fetch background:', err);
     }
   }, []);
 
   // Main timer: updates clock every second, triggers data refresh every 5 minutes
   useEffect(() => {
-    if (!settings) return;
+    if (!settings)
+      return;
 
     const interval = setInterval(() => {
       setDateTime(new Date());
@@ -132,6 +137,7 @@ function App() {
           fetchBackground();
           return 0;
         }
+
         return prev + 1;
       });
     }, 1000);
@@ -141,12 +147,15 @@ function App() {
 
   // Initial data load
   useEffect(() => {
-    if (!settings) return;
+    if (!settings)
+      return;
+    
     fetchBackground();
     setRefreshSignal(s => s + 1);
   }, [settings, fetchBackground]);
 
-  if (!settings) return null;
+  if (!settings)
+    return null;
 
   const hasWidgets = settings.widgets && settings.widgets.length > 0;
 
