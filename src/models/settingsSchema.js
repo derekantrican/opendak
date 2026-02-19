@@ -5,6 +5,7 @@ export const WIDGET_TYPES = {
   WEATHER: 'weather',
   CALENDAR: 'calendar',
   GENERIC: 'generic',
+  WEBPAGE: 'webpage',
 };
 
 export const FONT_SIZES = {
@@ -60,6 +61,10 @@ const genericFields = [
   { key: 'maxItems', label: 'Max Items', type: 'text', placeholder: 'Limit results (e.g. 5)' },
 ];
 
+const webpageFields = [
+  { key: 'url', label: 'URL', type: 'text', placeholder: 'https://example.com' },
+];
+
 export const widgetTypeConfig = {
   [WIDGET_TYPES.CLOCK]: {
     label: 'Clock',
@@ -76,6 +81,10 @@ export const widgetTypeConfig = {
   [WIDGET_TYPES.GENERIC]: {
     label: 'Generic',
     fields: genericFields,
+  },
+  [WIDGET_TYPES.WEBPAGE]: {
+    label: 'Webpage',
+    fields: webpageFields,
   },
 };
 
