@@ -10,7 +10,6 @@ RUN npm ci
 # Copy source and build
 COPY public/ public/
 COPY src/ src/
-COPY opendak-settings.json ./
 
 RUN npm run build
 
