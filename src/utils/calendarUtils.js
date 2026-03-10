@@ -84,7 +84,7 @@ export const parseCalendarData = (icalData, calendarColor) => {
   // Pre-filter: only create ICAL.Event objects for potentially relevant VEVENTs
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+  const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
 
   const allVevents = component.getAllSubcomponents('vevent');
   const relevantVevents = allVevents.filter(v => isEventPotentiallyRelevant(v, today, tomorrow));
@@ -125,7 +125,7 @@ export const getCalendarEventsForDisplay = (calendarsData, dateTime) => {
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
+  const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
 
   for (const cal of calendarsData) {
     if (!cal.events || !cal.exDateMap)
