@@ -63,26 +63,28 @@ function App() {
         corsProxy?.url ? corsProxy.url + redditUrl : redditUrl,
         corsProxy?.url ? { headers: safeParseJSON(corsProxy.headers) } : {},
       );
-      const data = await response.json();
-
-      const landscapePosts = data.data.children.filter(
-        p => !p.data.is_self &&
-          p.data.thumbnail !== 'default' &&
-          !p.data.stickied &&
-          p.data.preview?.images?.[0]?.source?.width > p.data.preview?.images?.[0]?.source?.height
-      );
+      // Extract only the fields we need, then drop the large response object
+      const landscapePosts = (await response.json()).data.children
+        .filter(p => {
+          const d = p.data;
+          const src = d.preview?.images?.[0]?.source;
+          return !d.is_self && d.thumbnail !== 'default' && !d.stickied && src && src.width > src.height;
+        })
+        .map(p => ({
+          url: p.data.url,
+          resolutions: (p.data.preview?.images?.[0]?.resolutions || []).map(r => ({ url: r.url, width: r.width })),
+        }));
 
       if (landscapePosts.length > 0) {
         const randomPost = landscapePosts[Math.floor(Math.random() * landscapePosts.length)];
-        const preview = randomPost.data.preview?.images?.[0];
 
         // Pick a preview resolution that's close to the screen size (avoids loading 6000x4000 images)
-        let imageUrl = randomPost.data.url;
-        if (preview?.resolutions?.length > 0) {
+        let imageUrl = randomPost.url;
+        if (randomPost.resolutions.length > 0) {
           const screenWidth = window.screen.width * (window.devicePixelRatio || 1);
           // Pick the smallest resolution that covers the screen width, or the largest available
-          const suitable = preview.resolutions.find(r => r.width >= screenWidth)
-            || preview.resolutions[preview.resolutions.length - 1];
+          const suitable = randomPost.resolutions.find(r => r.width >= screenWidth)
+            || randomPost.resolutions[randomPost.resolutions.length - 1];
           imageUrl = suitable.url.replace(/&amp;/g, '&');
         }
 
