@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import './App.css';
 import { ThemeProvider } from '@emotion/react';
 import { LinearProgress, Typography, createTheme } from '@mui/material';
@@ -144,11 +144,16 @@ function App() {
   if (!settings)
     return null;
 
+  const settingsContextValue = useMemo(
+    () => ({ settings, setSettings: handleSettingsChange, refreshSignal }),
+    [settings, handleSettingsChange, refreshSignal]
+  );
+
   const hasWidgets = settings.widgets && settings.widgets.length > 0;
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <SettingsContext.Provider value={{ settings, setSettings: handleSettingsChange, refreshSignal }}>
+      <SettingsContext.Provider value={settingsContextValue}>
         <DateTimeProvider>
           <div style={{
             position: 'relative',
