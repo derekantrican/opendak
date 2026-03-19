@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { LinearProgress, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { useSettings } from '../../context/SettingsContext';
 import { fontSizeMap } from '../../models/settingsSchema';
 
@@ -52,10 +52,8 @@ export default function FeedWidget({ config }) {
   const [items, setItems] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [fading, setFading] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
   const timerRef = useRef(null);
-  const progressRef = useRef(null);
 
   const displayTime = Math.max(parseInt(config.displayTime, 10) || 15, 1);
   const maxItems = parseInt(config.maxItems, 10) || 10;
@@ -93,7 +91,6 @@ export default function FeedWidget({ config }) {
       if (limited.length > 0) {
         setItems(limited);
         setCurrentIndex(0);
-        setProgress(0);
         setError(null);
       }
       else {
@@ -115,30 +112,17 @@ export default function FeedWidget({ config }) {
     if (items.length <= 1) 
       return;
 
-    // Progress bar updates
-    const progressInterval = 50; // ms
-    const totalTicks = (displayTime * 1000) / progressInterval;
-    let tick = 0;
-
-    progressRef.current = setInterval(() => {
-      tick++;
-      setProgress((tick / totalTicks) * 100);
-    }, progressInterval);
-
     // Item rotation
     timerRef.current = setInterval(() => {
       setFading(true);
       setTimeout(() => {
         setCurrentIndex(prev => (prev + 1) % items.length);
         setFading(false);
-        tick = 0;
-        setProgress(0);
       }, 400); // fade-out duration
     }, displayTime * 1000);
 
     return () => {
       clearInterval(timerRef.current);
-      clearInterval(progressRef.current);
     };
   }, [items, displayTime]);
 
@@ -198,20 +182,23 @@ export default function FeedWidget({ config }) {
       </div>
 
       {items.length > 1 && (
-        <LinearProgress
-          variant="determinate"
-          value={progress}
-          sx={{
-            mt: 1.5,
-            height: 3,
-            borderRadius: 1,
-            backgroundColor: 'rgba(255,255,255,0.1)',
-            '& .MuiLinearProgress-bar': {
-              transition: 'none',
+        <div style={{
+          marginTop: 12,
+          height: 3,
+          borderRadius: 1,
+          backgroundColor: 'rgba(255,255,255,0.1)',
+          overflow: 'hidden',
+        }}>
+          <div
+            key={currentIndex}
+            style={{
+              height: '100%',
+              borderRadius: 1,
               backgroundColor: 'rgba(255,255,255,0.4)',
-            },
-          }}
-        />
+              animation: `feedProgress ${displayTime}s linear`,
+            }}
+          />
+        </div>
       )}
 
       <Typography

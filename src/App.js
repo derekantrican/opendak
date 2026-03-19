@@ -8,6 +8,7 @@ import { safeParseJSON } from './utils/jsonUtils';
 import WidgetRenderer from './components/WidgetRenderer';
 import SettingsPanel from './components/SettingsPanel';
 import MemoryMonitor from './components/MemoryMonitor';
+import { DateTimeProvider } from './context/DateTimeContext';
 
 const darkTheme = createTheme({
   palette: { mode: 'dark' },
@@ -17,7 +18,6 @@ const DATA_REFRESH_INTERVAL = 60 * 5; // seconds
 
 function App() {
   const [settings, setSettings] = useState(null);
-  const [dateTime, setDateTime] = useState(new Date());
   const [refreshSignal, setRefreshSignal] = useState(0);
   const [backgroundImage, setBackgroundImage] = useState(null);
   const [timeSinceDataRefresh, setTimeSinceDataRefresh] = useState(0);
@@ -117,8 +117,6 @@ function App() {
       return;
 
     const interval = setInterval(() => {
-      setDateTime(new Date());
-
       setTimeSinceDataRefresh(prev => {
         if (prev >= DATA_REFRESH_INTERVAL) {
           // Trigger a refresh signal — widgets will react to this
@@ -150,46 +148,48 @@ function App() {
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <SettingsContext.Provider value={{ settings, setSettings: handleSettingsChange, dateTime, refreshSignal }}>
-        <div style={{
-          position: 'relative',
-          height: 'calc(100% - 2px)',
-          width: '100%',
-          backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          backgroundBlendMode: 'darken',
-          transition: settings.global.backgroundTransition ? 'background-image 5s' : undefined,
-          textShadow: 'black 2px 2px',
-        }}>
-          {hasWidgets ? (
-            <WidgetRenderer widgets={settings.widgets} />
-          ) : (
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-              <Typography variant="h5" sx={{
-                opacity: 0.8,
-                textAlign: 'center',
-                backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                padding: '12px 24px',
-                borderRadius: '8px',
-              }}>
-                Welcome to OpenDak, the open-source dashboard!<br/>
-                Click the ⚙️ icon (top-right) to add widgets
-              </Typography>
-            </div>
-          )}
-        </div>
+      <SettingsContext.Provider value={{ settings, setSettings: handleSettingsChange, refreshSignal }}>
+        <DateTimeProvider>
+          <div style={{
+            position: 'relative',
+            height: 'calc(100% - 2px)',
+            width: '100%',
+            backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundBlendMode: 'darken',
+            transition: settings.global.backgroundTransition ? 'background-image 5s' : undefined,
+            textShadow: 'black 2px 2px',
+          }}>
+            {hasWidgets ? (
+              <WidgetRenderer widgets={settings.widgets} />
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                <Typography variant="h5" sx={{
+                  opacity: 0.8,
+                  textAlign: 'center',
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                  padding: '12px 24px',
+                  borderRadius: '8px',
+                }}>
+                  Welcome to OpenDak, the open-source dashboard!<br/>
+                  Click the ⚙️ icon (top-right) to add widgets
+                </Typography>
+              </div>
+            )}
+          </div>
 
-        <LinearProgress
-          sx={{ height: 2 }}
-          variant="determinate"
-          color="inherit"
-          value={(timeSinceDataRefresh / DATA_REFRESH_INTERVAL) * 100}
-        />
+          <LinearProgress
+            sx={{ height: 2 }}
+            variant="determinate"
+            color="inherit"
+            value={(timeSinceDataRefresh / DATA_REFRESH_INTERVAL) * 100}
+          />
 
-        <SettingsPanel settings={settings} onSettingsChange={handleSettingsChange} />
-        <MemoryMonitor />
+          <SettingsPanel settings={settings} onSettingsChange={handleSettingsChange} />
+          <MemoryMonitor />
+        </DateTimeProvider>
       </SettingsContext.Provider>
     </ThemeProvider>
   );

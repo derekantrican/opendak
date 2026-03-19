@@ -8,3 +8,8 @@ html, body, #root {
   padding: 0;
   overflow: hidden;
 }
+
+@keyframes feedProgress {
+  from { width: 0%; }
+  to   { width: 100%; }
+}

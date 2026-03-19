@@ -1,10 +1,10 @@
 import { Typography } from '@mui/material';
-import { useSettings } from '../../context/SettingsContext';
+import { useDateTime } from '../../context/DateTimeContext';
 import { convertTZ } from '../../utils/dateUtils';
 import { fontSizeMap } from '../../models/settingsSchema';
 
 export default function ClockWidget({ config }) {
-  const { dateTime } = useSettings();
+  const dateTime = useDateTime();
 
   const tz = config.timezone || 'local';
   const displayTime = convertTZ(dateTime, tz);
