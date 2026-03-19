@@ -76,9 +76,12 @@ const isEventPotentiallyRelevant = (veventComponent, today, tomorrow) => {
 export const parseCalendarData = (icalData, calendarColor) => {
   const component = new ICAL.Component(ICAL.parse(icalData));
 
-  // Register timezones
+  // Register timezones (skip already-registered ones to avoid accumulating objects)
   for (const tz of component.getAllSubcomponents('vtimezone')) {
-    ICAL.TimezoneService.register(tz);
+    const tzid = tz.getFirstPropertyValue('tzid');
+    if (tzid && !ICAL.TimezoneService.has(tzid)) {
+      ICAL.TimezoneService.register(tz);
+    }
   }
 
   // Pre-filter: only create ICAL.Event objects for potentially relevant VEVENTs
