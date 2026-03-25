@@ -143,13 +143,13 @@ function App() {
     setRefreshSignal(s => s + 1);
   }, [settings, fetchBackground]);
 
-  if (!settings)
-    return null;
-
   const settingsContextValue = useMemo(
     () => ({ settings, setSettings: handleSettingsChange, refreshSignal }),
     [settings, handleSettingsChange, refreshSignal]
   );
+
+  if (!settings)
+    return null;
 
   const hasWidgets = settings.widgets && settings.widgets.length > 0;
 
