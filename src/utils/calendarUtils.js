@@ -7,18 +7,18 @@ const recursOn = (event, precomputedExdates, date) => {
 
   for (let next = iterator.next(); next; next = iterator.next()) {
     if (precomputedExdates.find(d => compareDateOnly(d, date) === 0)) {
-      return false;
+      return null;
     }
 
     const compareResult = compareDateOnly(next.toJSDate(), date);
     if (compareResult === 0) 
-      return true;
+      return next;
 
     if (compareResult === 1) 
-      return false;
+      return null;
   }
 
-  return false;
+  return null;
 };
 
 export const getEventsForDate = (events, exDateMap, date) => {
@@ -29,10 +29,11 @@ export const getEventsForDate = (events, exDateMap, date) => {
     }
 
     if (e.isRecurring()) {
-      if (recursOn(e, exDateMap[e.uid] ?? [], date)) {
-        const eventStart = e.startDate.toJSDate();
-        e.instanceStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), eventStart.getHours(), eventStart.getMinutes());
-        const duration = e.endDate.toJSDate().getTime() - eventStart.getTime();
+      const instanceTime = recursOn(e, exDateMap[e.uid] ?? [], date);
+      if (instanceTime) {
+        const instanceStartUtc = instanceTime.toJSDate();
+        e.instanceStart = instanceStartUtc;
+        const duration = e.endDate.toJSDate().getTime() - e.startDate.toJSDate().getTime();
         e.instanceEnd = new Date(e.instanceStart.getTime() + duration);
 
         return true;
