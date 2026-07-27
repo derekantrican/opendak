@@ -121,6 +121,7 @@ export const getDescriptionForType = (type) => {
 
 export const createDefaultSettings = () => ({
   global: {
+    backgroundSource: 'reddit',
     backgroundSubreddit: 'EarthPorn',
     backgroundTransition: true,
     corsProxy: {

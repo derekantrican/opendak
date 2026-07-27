@@ -16,6 +16,44 @@ const darkTheme = createTheme({
 
 const DATA_REFRESH_INTERVAL = 60 * 5; // seconds
 
+// Returns landscape-oriented image posts as { url, resolutions: [{ url, width }] }
+async function fetchRedditPosts(subreddit, corsProxy) {
+  const redditUrl = `https://www.reddit.com/r/${subreddit}/hot/.json?limit=50`;
+  const response = await fetch(
+    corsProxy?.url ? corsProxy.url + redditUrl : redditUrl,
+    corsProxy?.url ? { headers: safeParseJSON(corsProxy.headers) } : {},
+  );
+  // Extract only the fields we need, then drop the large response object
+  return (await response.json()).data.children
+    .filter(p => {
+      const d = p.data;
+      const src = d.preview?.images?.[0]?.source;
+      return !d.is_self && d.thumbnail !== 'default' && !d.stickied && src && src.width > src.height;
+    })
+    .map(p => ({
+      url: p.data.url,
+      resolutions: (p.data.preview?.images?.[0]?.resolutions || []).map(r => ({ url: r.url, width: r.width })),
+    }));
+}
+
+async function fetchLemmyPosts(community, corsProxy) {
+  const lemmyUrl = `https://lemmy.ml/api/v3/post/list?community_name=${community}&sort=Hot&limit=50`;
+  const response = await fetch(
+    corsProxy?.url ? corsProxy.url + lemmyUrl : lemmyUrl,
+    corsProxy?.url ? { headers: safeParseJSON(corsProxy.headers) } : {},
+  );
+  // Lemmy only gives one resolution per post, so wrap it in the same shape as reddit's resolutions list
+  return (await response.json()).posts
+    .filter(p => {
+      const d = p.image_details;
+      return !p.post.nsfw && !p.post.removed && !p.post.deleted && p.post.url && d && d.width > d.height;
+    })
+    .map(p => ({
+      url: p.post.url,
+      resolutions: [{ url: p.post.url, width: p.image_details.width }],
+    }));
+}
+
 function App() {
   const [settings, setSettings] = useState(null);
   const [refreshSignal, setRefreshSignal] = useState(0);
@@ -56,24 +94,12 @@ function App() {
       return;
 
     try {
-      const subreddit = s.global.backgroundSubreddit;
+      const source = s.global.backgroundSource || 'reddit';
+      const community = s.global.backgroundSubreddit;
       const corsProxy = s.global?.corsProxy;
-      const redditUrl = `https://www.reddit.com/r/${subreddit}/hot/.json?limit=50`;
-      const response = await fetch(
-        corsProxy?.url ? corsProxy.url + redditUrl : redditUrl,
-        corsProxy?.url ? { headers: safeParseJSON(corsProxy.headers) } : {},
-      );
-      // Extract only the fields we need, then drop the large response object
-      const landscapePosts = (await response.json()).data.children
-        .filter(p => {
-          const d = p.data;
-          const src = d.preview?.images?.[0]?.source;
-          return !d.is_self && d.thumbnail !== 'default' && !d.stickied && src && src.width > src.height;
-        })
-        .map(p => ({
-          url: p.data.url,
-          resolutions: (p.data.preview?.images?.[0]?.resolutions || []).map(r => ({ url: r.url, width: r.width })),
-        }));
+      const landscapePosts = source === 'lemmy'
+        ? await fetchLemmyPosts(community, corsProxy)
+        : await fetchRedditPosts(community, corsProxy);
 
       if (landscapePosts.length > 0) {
         const randomPost = landscapePosts[Math.floor(Math.random() * landscapePosts.length)];

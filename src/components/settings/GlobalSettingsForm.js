@@ -1,4 +1,4 @@
-import { Switch, TextField, Typography } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, Switch, TextField, Typography } from '@mui/material';
 import { isValidJSON } from '../../utils/jsonUtils';
 
 export default function GlobalSettingsForm({ globalSettings, onChange }) {
@@ -13,16 +13,33 @@ export default function GlobalSettingsForm({ globalSettings, onChange }) {
     });
   };
 
+  const backgroundSource = globalSettings.backgroundSource || 'reddit';
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       <Typography variant="h6">Global Settings</Typography>
 
+      <FormControl size="small" fullWidth>
+        <InputLabel id="background-source-label">Background Image Source</InputLabel>
+        <Select
+          labelId="background-source-label"
+          label="Background Image Source"
+          value={backgroundSource}
+          onChange={(e) => handleChange('backgroundSource', e.target.value)}
+        >
+          <MenuItem value="reddit">Reddit</MenuItem>
+          <MenuItem value="lemmy">Lemmy (lemmy.ml)</MenuItem>
+        </Select>
+      </FormControl>
+
       <TextField
-        label="Background Subreddit"
+        label={backgroundSource === 'lemmy' ? 'Background Community' : 'Background Subreddit'}
         value={globalSettings.backgroundSubreddit || ''}
         onChange={(e) => handleChange('backgroundSubreddit', e.target.value)}
         size="small"
-        helperText="e.g. EarthPorn, NaturePorn, SkyPorn"
+        helperText={backgroundSource === 'lemmy'
+          ? 'e.g. earthporn — a community on lemmy.ml'
+          : 'e.g. EarthPorn, NaturePorn, SkyPorn'}
         fullWidth
       />
 
